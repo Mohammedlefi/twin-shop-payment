@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TWINS SHOP - Payment Gateway</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@400;900&display=swap');
+
+        :root {
+            --ps-blue: #0072ce;
+            --ps-pink: #ff0055;
+            --neon-cyan: #00f2ff;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #0a0a1a 0%, #000000 100%);
+            font-family: 'Cairo', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* هيكل يد البلايستيشن (Controller Frame) */
+        .controller-frame {
+            position: relative;
+            background: rgba(15, 15, 15, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px 50px 80px 80px;
+            box-shadow: 0 0 50px rgba(0, 114, 206, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        /* تأثيرات النيون الجانبية */
+        .controller-frame::before {
+            content: ''; position: absolute; left: -2px; top: 25%; width: 5px; height: 35%;
+            background: var(--ps-blue); box-shadow: 0 0 25px var(--ps-blue); border-radius: 10px;
+        }
+        .controller-frame::after {
+            content: ''; position: absolute; right: -2px; top: 25%; width: 5px; height: 35%;
+            background: var(--ps-pink); box-shadow: 0 0 25px var(--ps-pink); border-radius: 10px;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+
+        .payment-card:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, var(--ps-blue), var(--ps-pink));
+            transition: 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 114, 206, 0.3);
+        }
+
+        .copy-btn:active { transform: scale(0.92); }
+
+        .gaming-title {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(to bottom, #fff, var(--ps-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        #copy-toast {
+            visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--ps-blue); padding: 12px 35px; border-radius: 50px; z-index: 1000;
+            font-weight: bold; box-shadow: 0 5px 15px rgba(0, 114, 206, 0.4);
+        }
+
+        /* لضمان الوضوح على الهواتف */
+        @media (max-width: 640px) {
+            .controller-frame { padding: 25px; border-radius: 40px 40px 60px 60px; }
+            .gaming-title { font-size: 2.2rem; }
+            .payment-icon { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="copy-toast">تم النسخ بنجاح! ✅</div>
+
+    <div class="controller-frame">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-6xl font-black gaming-title mb-2">TWINS SHOP</h1>
+            <p class="text-gray-400 font-bold tracking-widest text-xs md:text-sm">TUNISIA DIGITAL HUB 🇹🇳</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="payment-card p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="text-yellow-500 text-3xl"><i class="fab fa-bitcoin"></i></div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase">Binance ID</p>
+                        <p class="font-bold text-lg md:text-xl">1072020458</p>
+                    </div>
+                </div>
+                <button onclick="copy('1072020458')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
+            </div>
+
+            <div class="payment-card p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="text-green-500 text-3xl"><i class="fas fa-university"></i></div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase italic">D17 / Poste</p>
+                        <p class="font-bold text-lg md:text-xl">21133138</p>
+                    </div>
+                </div>
+                <button onclick="copy('21133138')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
+            </div>
+
+            <div class="payment-card p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="text-red-500 text-3xl"><i class="fas fa-mobile-screen"></i></div>
+                    <div>
+                        <p class="text-[10px] text-red-500 font-bold uppercase">Ooredoo Cash</p>
+                        <p class="font-bold text-lg md:text-xl">99305741</p>
+                    </div>
+                </div>
+                <button onclick="copy('99305741')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
+            </div>
+
+            <div class="payment-card p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="text-blue-400 text-3xl"><i class="fab fa-cc-visa"></i></div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase">Global Payment</p>
+                        <p class="font-bold text-lg md:text-xl">MasterCard</p>
+                    </div>
+                </div>
+                <i class="fas fa-shield-halved text-green-500 text-xl opacity-40"></i>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mt-10 text-center text-[10px] md:text-xs font-bold text-gray-400 uppercase">
+            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">✅ +12,500 طلب</div>
+            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">⭐ 4.9 تقييم</div>
+            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">🕒 24/7 متاح</div>
+        </div>
+
+        <div class="mt-8 flex flex-col gap-4">
+            <a href="https://lefistore.b3na.com/" class="w-full bg-white text-black py-4 rounded-full font-black text-center text-lg hover:bg-gray-200 transition-all shadow-xl">
+                 أدخل للمتجر الرسمي
+            </a>
+            <a href="https://wa.me/21621133138" class="w-full bg-[#25D366] text-white py-4 rounded-full font-black text-center text-lg hover:bg-[#20bd5a] transition-all shadow-lg">
+                 تواصل معنا واتساب
+            </a>
+        </div>
+
+        <div class="mt-8 text-center border-t border-white/5 pt-6">
+            <p class="text-gray-500 text-xs md:text-sm">
+                متجر تونسي موثوق 100% 🇹🇳 | ضمان وسرعة خيالية | <b>TWINS SHOP 2026</b>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copy(text) {
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            
+            const toast = document.getElementById('copy-toast');
+            toast.style.visibility = 'visible';
+            setTimeout(() => { toast.style.visibility = 'hidden'; }, 2000);
+        }
+    </script>
+</body>
+</html>
