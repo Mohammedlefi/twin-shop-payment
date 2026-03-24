@@ -3,194 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TWINS SHOP - Payment Gateway</title>
+    <title>TWINS SHOP | The Ultimate Gaming Terminal</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@400;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@400;700;900&display=swap');
 
-        :root {
-            --ps-blue: #0072ce;
-            --ps-pink: #ff0055;
-            --neon-cyan: #00f2ff;
+        /* تحسين سلاسة التمرير واستجابة اللمس */
+        html { scroll-behavior: smooth; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background: radial-gradient(circle at top, #0a0a1a 0%, #000000 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #ff1f1f 45%, #ff8c00 100%);
+            background-attachment: fixed;
             font-family: 'Cairo', sans-serif;
             color: white;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            margin: 0;
+            display: flex; align-items: center; justify-content: center;
             overflow-x: hidden;
+            perspective: 1200px;
         }
 
-        /* هيكل يد البلايستيشن (Controller Frame) */
-        .controller-frame {
+        #snow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+        .master-hub {
             position: relative;
-            background: rgba(15, 15, 15, 0.9);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px 50px 80px 80px;
-            box-shadow: 0 0 50px rgba(0, 114, 206, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
+            width: 95%; max-width: 900px;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 35px;
             padding: 40px;
-            max-width: 800px;
-            width: 100%;
-            transition: transform 0.3s ease;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+            z-index: 10;
+            transform-style: preserve-3d;
+            border-top: 5px solid #00f2ff;
+            animation: borderFlow 4s infinite alternate;
+            /* تحسين الأداء أثناء الحركة */
+            will-change: transform;
         }
 
-        /* تأثيرات النيون الجانبية */
-        .controller-frame::before {
-            content: ''; position: absolute; left: -2px; top: 25%; width: 5px; height: 35%;
-            background: var(--ps-blue); box-shadow: 0 0 25px var(--ps-blue); border-radius: 10px;
-        }
-        .controller-frame::after {
-            content: ''; position: absolute; right: -2px; top: 25%; width: 5px; height: 35%;
-            background: var(--ps-pink); box-shadow: 0 0 25px var(--ps-pink); border-radius: 10px;
+        @keyframes borderFlow {
+            0% { border-top-color: #00f2ff; }
+            50% { border-top-color: #ff0055; }
+            100% { border-top-color: #ffaa00; }
         }
 
-        .payment-card {
+        .gaming-font { font-family: 'Orbitron', sans-serif; }
+
+        .pay-card {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
             border-radius: 20px;
-        }
-
-        .payment-card:hover {
-            border-color: var(--neon-cyan);
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .copy-btn {
-            background: linear-gradient(45deg, var(--ps-blue), var(--ps-pink));
-            transition: 0.2s;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 114, 206, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        .copy-btn:active { transform: scale(0.92); }
-
-        .gaming-title {
-            font-family: 'Orbitron', sans-serif;
-            background: linear-gradient(to bottom, #fff, var(--ps-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
+        .pay-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            border-color: #00f2ff;
+            box-shadow: 0 10px 25px rgba(0, 242, 255, 0.15);
         }
 
-        #copy-toast {
-            visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--ps-blue); padding: 12px 35px; border-radius: 50px; z-index: 1000;
-            font-weight: bold; box-shadow: 0 5px 15px rgba(0, 114, 206, 0.4);
+        .ticker-wrap {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 15px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin: 25px 0;
+            overflow: hidden;
         }
 
-        /* لضمان الوضوح على الهواتف */
-        @media (max-width: 640px) {
-            .controller-frame { padding: 25px; border-radius: 40px 40px 60px 60px; }
-            .gaming-title { font-size: 2.2rem; }
-            .payment-icon { font-size: 1.5rem; }
+        .ticker-content {
+            display: flex;
+            gap: 20px;
+            animation: ticker 40s linear infinite; /* جعل الحركة أبطأ قليلاً لتكون مريحة للعين */
+            width: max-content;
         }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
+        }
+
+        .comment {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 10px;
+            min-width: 320px;
+        }
+
+        #copyToast {
+            position: fixed; top: 20px; right: -400px;
+            background: linear-gradient(90deg, #00f2ff, #0066ff);
+            color: white; padding: 15px 30px;
+            border-radius: 12px; font-weight: 900;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.4);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .btn-hub {
+            padding: 18px; border-radius: 18px;
+            font-weight: 900; letter-spacing: 1px;
+            transition: transform 0.2s ease; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .btn-store { background: white; color: black; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .btn-whatsapp { background: #25D366; color: white; box-shadow: 0 0 20px rgba(37,211,102,0.2); }
+        
+        .btn-hub:active { transform: scale(0.95); } /* تأثير ضغط حقيقي عند اللمس */
+
+        .verified-badge { color: #00f2ff; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <div id="copy-toast">تم النسخ بنجاح! ✅</div>
+    <canvas id="snow"></canvas>
 
-    <div class="controller-frame">
+    <div id="copyToast">
+        <i class="fas fa-check-circle"></i>
+        <span>تم نسخ البيانات بنجاح!</span>
+    </div>
+
+    <div class="master-hub" id="mainUI">
         <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-6xl font-black gaming-title mb-2">TWINS SHOP</h1>
-            <p class="text-gray-400 font-bold tracking-widest text-xs md:text-sm">TUNISIA DIGITAL HUB 🇹🇳</p>
+            <div class="flex justify-center items-center gap-3 mb-2">
+                <h1 class="text-5xl md:text-7xl font-black gaming-font">TWINS SHOP</h1>
+                <i class="fas fa-check-circle verified-badge text-3xl"></i>
+            </div>
+            <p class="text-[10px] tracking-[6px] text-cyan-400 font-bold opacity-80 uppercase">The Official Digital Hub for Gamers 🇹🇳</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             
-            <div class="payment-card p-5 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="text-yellow-500 text-3xl"><i class="fab fa-bitcoin"></i></div>
-                    <div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase">Binance ID</p>
-                        <p class="font-bold text-lg md:text-xl">1072020458</p>
+            <div class="pay-card group" onclick="copyValue('1072020458', 'Binance ID')">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/40">
+                            <i class="fab fa-bitcoin text-yellow-500 text-3xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Binance Gateway</p>
+                            <p class="text-xl font-black gaming-font">1072020458</p>
+                        </div>
                     </div>
+                    <i class="far fa-copy text-gray-500 group-hover:text-yellow-500 transition-colors"></i>
                 </div>
-                <button onclick="copy('1072020458')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
             </div>
 
-            <div class="payment-card p-5 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="text-green-500 text-3xl"><i class="fas fa-university"></i></div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase italic">D17 / Poste</p>
-                        <p class="font-bold text-lg md:text-xl">تنجم تصب الفلوس على واحد من الارقام الزوز 99305741/21133138</p>
+            <div class="pay-card group" onclick="copyValue('21133138', 'رقم الهاتف (D17)')">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center border border-green-500/40">
+                            <i class="fas fa-university text-green-500 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">D17 / Poste TN</p>
+                            <p class="text-lg font-black gaming-font">21133138 / 99305741</p>
+                        </div>
                     </div>
+                    <i class="far fa-copy text-gray-500 group-hover:text-green-500"></i>
                 </div>
-                <button onclick="copy('21133138')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
             </div>
 
-            <div class="payment-card p-5 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="text-red-500 text-3xl"><i class="fas fa-mobile-screen"></i></div>
-                    <div>
-                        <p class="text-[10px] text-red-500 font-bold uppercase">Ooredoo Cash</p>
-                        <p class="font-bold text-lg md:text-xl">ابعثلنا مساج على الواتساب نفسرولك شتعمل</p>
+            <div class="pay-card group" onclick="copyValue('99305741', 'رقم المحفظة')">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center border border-red-500/40">
+                            <i class="fas fa-wallet text-red-500 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Ooredoo Cash</p>
+                            <p class="text-sm font-bold">تواصل واتساب للإرسال</p>
+                        </div>
                     </div>
+                    <i class="fab fa-whatsapp text-red-500 text-xl"></i>
                 </div>
-                <button onclick="copy('99305741')" class="copy-btn px-5 py-2 rounded-xl text-xs font-black">نسخ</button>
             </div>
 
-            <div class="payment-card p-5 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="text-blue-400 text-3xl"><i class="fab fa-cc-visa"></i></div>
-                    <div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase">Global Payment</p>
-                        <p class="font-bold text-lg md:text-xl">ابعثلنا نفهموك على الواتس</p>
+            <div class="pay-card group">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center border border-blue-500/40">
+                            <i class="fab fa-cc-visa text-blue-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">International Card</p>
+                            <p class="text-sm font-bold">الدفع بالبطاقة البنكية</p>
+                        </div>
                     </div>
+                    <i class="fas fa-lock text-gray-600"></i>
                 </div>
-                <i class="fas fa-shield-halved text-green-500 text-xl opacity-40"></i>
+            </div>
+
+        </div>
+
+        <div class="ticker-wrap">
+            <div class="ticker-content">
+                <div class="comment"><span class="text-yellow-400 text-xs">⭐⭐⭐⭐⭐</span> <p class="text-[11px]">"أسرع صبة في تونس، الـ D17 ما خذاتش دقيقة!" - أحمد</p></div>
+                <div class="comment"><span class="text-yellow-400 text-xs">⭐⭐⭐⭐⭐</span> <p class="text-[11px]">"ثقة وسرعة في تفعيل Netflix." - مريم</p></div>
+                <div class="comment"><span class="text-yellow-400 text-xs">⭐⭐⭐⭐⭐</span> <p class="text-[11px]">"Binance ID شغال 100%، شكراً Twins Shop." - ياسين</p></div>
+                <div class="comment"><span class="text-yellow-400 text-xs">⭐⭐⭐⭐⭐</span> <p class="text-[11px]">"تعامل راقي وسرعة خيالية في الرد." - حمزة</p></div>
+                <div class="comment"><span class="text-yellow-400 text-xs">⭐⭐⭐⭐⭐</span> <p class="text-[11px]">"أسرع صبة في تونس، الـ D17 ما خذاتش دقيقة!" - أحمد</p></div>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3 mt-10 text-center text-[10px] md:text-xs font-bold text-gray-400 uppercase">
-            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">✅ +12,500 طلب</div>
-            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">⭐ 4.9 تقييم</div>
-            <div class="bg-white/5 p-3 rounded-2xl border border-white/5">🕒 24/7 متاح</div>
-        </div>
-
-        <div class="mt-8 flex flex-col gap-4">
-            <a href="https://lefistore.b3na.com/" class="w-full bg-white text-black py-4 rounded-full font-black text-center text-lg hover:bg-gray-200 transition-all shadow-xl">
-                 أدخل للمتجر الرسمي
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+            <a href="https://lefistore.b3na.com/" class="btn-hub btn-store text-lg gaming-font">
+                <i class="fas fa-shopping-bag"></i> VISIT STORE
             </a>
-            <a href="https://wa.me/21621133138" class="w-full bg-[#25D366] text-white py-4 rounded-full font-black text-center text-lg hover:bg-[#20bd5a] transition-all shadow-lg">
-                 تواصل معنا واتساب
+            <a href="https://wa.me/21621133138" class="btn-hub btn-whatsapp text-lg gaming-font">
+                <i class="fab fa-whatsapp text-2xl"></i> WHATSAPP SUPPORT
             </a>
         </div>
 
-        <div class="mt-8 text-center border-t border-white/5 pt-6">
-            <p class="text-gray-500 text-xs md:text-sm">
-                متجر تونسي موثوق 100% 🇹🇳 | ضمان وسرعة خيالية | <b>TWINS SHOP 2026</b>
-            </p>
+        <div class="mt-8 text-center text-[9px] text-gray-500 font-bold tracking-[3px]">
+            © TWINS SHOP TUNISIA 2026 // SECURE 256-BIT ENCRYPTION
         </div>
     </div>
 
     <script>
-        function copy(text) {
-            const input = document.createElement('textarea');
-            input.value = text;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-            
-            const toast = document.getElementById('copy-toast');
-            toast.style.visibility = 'visible';
-            setTimeout(() => { toast.style.visibility = 'hidden'; }, 2000);
+        // تحسين أداء النسخ
+        function copyValue(val, label) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(val).then(() => {
+                    showToast(label);
+                });
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = val;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast(label);
+            }
         }
+
+        function showToast(label) {
+            const toast = document.getElementById('copyToast');
+            toast.querySelector('span').innerText = `تم نسخ ${label} بنجاح!`;
+            toast.style.right = '20px';
+            setTimeout(() => { toast.style.right = '-400px'; }, 2500);
+        }
+
+        // تحسين أداء تأثير الثلج (Snowfall Optimization)
+        const canvas = document.getElementById('snow');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        let particles = [];
+        
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            const particleCount = window.innerWidth < 768 ? 40 : 80; // تقليل العدد في الموبايل لزيادة السلاسة
+            for(let i=0; i<particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width, 
+                    y: Math.random() * canvas.height, 
+                    r: Math.random() * 3 + 1, 
+                    s: Math.random() * 1.5 + 0.5
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            for(let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                p.y += p.s;
+                p.x += Math.sin(p.y / 30) * 0.5;
+                if(p.y > canvas.height) p.y = -10;
+            }
+            ctx.fill();
+            requestAnimationFrame(draw);
+        }
+        
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizedFinished);
+            window.resizedFinished = setTimeout(init, 250);
+        });
+        
+        init(); 
+        draw();
+
+        // تحسين تأثير الـ 3D ليكون أخف ولا يسبب بطء (Throttle)
+        const ui = document.getElementById('mainUI');
+        let ticking = false;
+
+        document.addEventListener('mousemove', (e) => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const x = (window.innerWidth / 2 - e.pageX) / 80;
+                    const y = (window.innerHeight / 2 - e.pageY) / 80;
+                    ui.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
     </script>
 </body>
 </html>
